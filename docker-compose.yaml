@@ -1,0 +1,35 @@
+version: '3.7'
+services:
+
+  apiservice:
+    container_name: gapi
+    build:
+      context: ./GenerationAPI
+      dockerfile: dockerfile
+    ports:
+      - "5005:5005"
+    depends_on:
+      - sqlserver
+
+  uiservice:
+    container_name: gui
+    build:
+      context: ./GenerationUI
+      dockerfile: dockerfile.UI
+    ports:
+      - "5006:80"
+    depends_on:
+      - apiservice
+      
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    container_name: ss
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: "BigPassw0rd"
+    volumes:
+      - ./data/mssql:/var/opt/mssql3
+    ports:
+      - '1433:1433'
+    expose:
+      - 1433
