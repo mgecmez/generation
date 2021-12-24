@@ -1,0 +1,11 @@
+FROM node:14.18.2-slim as build
+WORKDIR /GUI
+COPY src ./src
+COPY *.json ./
+RUN npm install -g @angular/cli@13.1.1
+RUN npm install
+RUN ng build --prod
+
+FROM nginx:alpine as deploy
+WORKDIR /GUI
+COPY --from=build /GUI/dist/generation-ui/*.* /usr/share/nginx/html/
